@@ -63,9 +63,6 @@ void motorObject::motorHALT() {
 void motorObject::_motorRotate(int pin) {
     _setState(M_TON); 
     pwmValue = 1000; 
-    Serial.println("PWM VALUE: "); 
-    Serial.println(pwmValue); 
-    Serial.println(); 
     analogWrite(pin, pwmValue); 
 }
 
@@ -75,9 +72,6 @@ void motorObject::_motorRotate(int pin) {
 void motorObject::_motorStop(int pin) {
     _setState(M_TOFF);
     pwmValue = 0; 
-    Serial.println("PWM VALUE: ");
-    Serial.println(pwmValue);
-    Serial.println();
     analogWrite(pin, pwmValue);
 }
 
