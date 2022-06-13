@@ -15,20 +15,25 @@
 /*================================================================*/
 /* MOTOR inits-----------------------------*/
 
-#define C_pwm  8
-#define C_en  9
-#define CC_pwm  7
-#define CC_en 6
+#define MXa_C_pwm 12
+#define MXa_C_en    13
+#define MXa_CC_pwm  11
+#define MXa_CC_en   10
+
+#define MXb_C_pwm  8
+#define MXb_C_en  9
+#define MXb_CC_pwm  7
+#define MXb_CC_en 6
 
 #define T_STATE_RESOLUTION 100
 #define T_STATE_PWM_INIT_VALUE 24
-#define T_STATE_PWM_INCREMENT 10
-#define PWM_LIMIT 1020
+#define T_STATE_PWM_INCREMENT 1
+#define PWM_LIMIT 255
 
 
 typedef enum m_State{
     M_SOFF, M_SON, M_TON, M_TOFF  //steadyOFF, steadyON, TurningON, turningOFF
-}m_State;
+};
 /*
    control single motor
 */
@@ -38,24 +43,29 @@ class motorObject
 private:
 
 	int motorON;  /* external control input */
+    bool motorACTIVEState; /*MOTOR CURRENTLY IN ACTIVE */
 
     int cEnablePin; /* clockwise enable pin */
     int ccEnablePin; /* counter clockwise enable Pin */
     int cPwmPin; /* clockwise Pwm pin */
     int ccPwmPin; /* cc pwm pin */
-    int pwmValue;   /* Motor running pwm Value */
-
-    m_State motorState; /*0-off, 1-on, 2-turningOn, 3-turningOFF */
-
-    int T_State_count; 
-    int T_State_Number; /* resolution of transcient state */
     int T_State_pwm_Increment; /* increment value of pwm */
 
-    void _motorRotate(int); /* analogwrite given pin */
+
+    int c_pwmValue;   /* Motor running pwm Value */
+    int cc_pwmValue;   /* Motor running pwm Value */
+
+    void _motorRotate(int, int); /* analogwrite given pin */
     void _motorStop(int);    /* analogWrite given pin */
-    void _setState(m_State _state) {
-        motorState = _state; 
-    };  /*0-OFF, 1-ON, 2-turningON, 3-turningOFF */
+
+    m_State cw_motorState; /*0-off, 1-on, 2-turningOn, 3-turningOFF */
+    m_State ccw_motorState;
+
+    void cw_setState(m_State _state) { cw_motorState = _state; }
+    m_State cw_getState() { return cw_motorState; }
+
+    void ccw_setState(m_State _state) { ccw_motorState = _state; }
+    m_State ccw_getState() { return ccw_motorState; }
 
 public:
 
@@ -79,18 +89,18 @@ public:
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
 
-    m_State getState() {
-        return motorState; 
+    bool isMotorActive() {
+        return motorACTIVEState;
     }
-
-
     void updateTranscientPWM(); 
 
         
 };
 /*----------------------------------------*/
 /*================================================================*/
-extern motorObject Motor1;
+extern motorObject MotorXb;
+extern motorObject MotorXa;
+
 
 #endif
 

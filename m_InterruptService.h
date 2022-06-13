@@ -10,6 +10,7 @@
 #endif
 
 /*==================================================*/
+extern int timer100mS; 
 
 void setTimerInterrupt();
 

@@ -4,6 +4,8 @@
 
 #include "m_InterruptService.h"
 
+int timer100mS = 0;
+
 void setTimerInterrupt() {
 	/*
 	Setting timer interrrupt for reading data every 1ms

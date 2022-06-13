@@ -44,6 +44,7 @@ private:
 	bool SensorState;	/* set after analysing buffer */
 	int arrayMagnitude; /* condition for set/reset SensorState */
 	int counter;		/* counter data */
+	bool counterIncFlag; /* counter Increment Flag */
 public:	
 	ir_Sensor(int); 
 	bool initSensor(); 
@@ -52,6 +53,11 @@ public:
 		return counter; 
 	}
 	void resetSensor(); 
+	void sensorSpeed(); 
+	bool getCountIncFlag() {
+		counterIncFlag = 0; 
+		return counterIncFlag;
+	}														
 };
 /*================================================================*/
 extern ir_Sensor ir_Sensor_1;

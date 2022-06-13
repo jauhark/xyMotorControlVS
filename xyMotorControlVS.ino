@@ -14,10 +14,9 @@
 #include "m_MotorDrive.h"
 
 
+/* ============================================================== */
 /* SETUP -----------------------------------*/
 void setup() {
-
-
 
 	Serial.begin(9600); 
 	Serial.println("PROGRAM STARTING... "); 
@@ -32,8 +31,12 @@ void setup() {
 	else Serial.println("SUCCESSFULLY INITIALISED SENSOR 1");
 
 	/* Motor Initialisation */
-	Motor1.motorInit();
-	Motor1.enableMotor();
+	MotorXa.motorInit();
+	MotorXa.enableMotor();
+
+	MotorXb.motorInit();
+	MotorXb.enableMotor();
+
 
 	/* Connecting modbus to client */
 	if (myController.connectToClient()) {
@@ -54,6 +57,7 @@ void setup() {
 
 }
 
+/* ============================================================== */
 /* LOOP -------------------------------------*/
 
 void loop() {
@@ -61,28 +65,34 @@ void loop() {
 	myController.poll(); 
 	ModbusRTUServer.holdingRegisterWrite(4, ir_Sensor_1.getCount());
 	
+	/* control motors on receiving data */
 	if (myController.getCtrlData(0) > 0)
 	{
 		ledIndicator_ON(motorCW_LED); 
-		Motor1.cRotate();
+		MotorXa.cRotate();
+		//MotorXb.cRotate();
 	}
 	else { 
 		ledIndicator_OFF(motorCW_LED); 
-		Motor1.stop_cRotate(); 
+		MotorXa.stop_cRotate(); 
+		//MotorXb.stop_cRotate(); 
 	}
-	
-	if (myController.getCtrlData(2) > 0)
-	{
-		ledIndicator_ON(motorCCW_LED); 
-		Motor1.ccRotate();
-	}
-	else {
-		ledIndicator_OFF(motorCCW_LED); 
-		Motor1.stop_ccRotate();
-	}
-
+	//
+	//if (myController.getCtrlData(2) > 0)
+	//{
+	//	ledIndicator_ON(motorCCW_LED); 
+	//	MotorXa.cRotate(); 
+	//	//MotorXb.ccRotate();
+	//}
+	//else {
+	//	ledIndicator_OFF(motorCCW_LED); 
+	//	MotorXa.stop_cRotate(); 
+	//	//MotorXb.stop_ccRotate();
+	//}
+	//delay(1); 
 }
 
+/* ============================================================== */
 /* EVENT ------------------------------------*/
 
 void serialEvent2() {
@@ -90,10 +100,18 @@ void serialEvent2() {
 	myController.readFromClient();
 }
 
+/* ============================================================== */
 /* ISR --------------------------------------*/
-
+int timer = 0; 
 ISR(TIMER1_COMPA_vect) {
-	ir_Sensor_1.updateData(); 
-	toggleLedIndicator(timerInterrupt_LED); 
+	timer++;
+	ir_Sensor_1.updateData();
+
+	toggleLedIndicator(timerInterrupt_LED);
+	if (timer > 20) {
+
+		timer = 0; 
+	}
+
 	TCNT1 = 0; 
 }

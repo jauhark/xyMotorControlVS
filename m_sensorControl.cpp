@@ -12,6 +12,7 @@ ir_Sensor::ir_Sensor(int pinNo) {
 	arrayMagnitude = 0;
 	counter = 0;
 	stateChangeDetected = 0; 
+	counterIncFlag = 0;
 }
 
 /*------------------------------------------------------*/
@@ -59,6 +60,7 @@ void ir_Sensor::updateData() {
 	if (arrayMagnitude > IR_NOISE_HIGH_THRESH) {	//taking sample of initial state and storing the state
 		if (SensorState == initialSensorState) {
 			SensorState = !(initialSensorState);
+			counterIncFlag = 1; 
 			counter++;
 		}
 	}
