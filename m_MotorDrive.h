@@ -50,23 +50,11 @@ private:
     void _motorRotate(int, int); /* analogwrite given pin */
     void _motorStop(int);    /* analogWrite given pin */
 
-    m_State cw_motorState; /*0-off, 1-on, 2-turningOn, 3-turningOFF */
-    m_State ccw_motorState;
-
-
-
 public:
     int T_State_pwm_Increment; /* increment value of pwm */
 
     int c_pwmValue;   /* Motor running pwm Value */
     int cc_pwmValue;   /* Motor running pwm Value */
-
-    void cw_setState(m_State _state) { cw_motorState = _state; }
-    m_State cw_getState() { return cw_motorState; }
-
-    void ccw_setState(m_State _state) { ccw_motorState = _state; }
-    m_State ccw_getState() { return ccw_motorState; }
-
 
     motorObject(int, int, int, int);/*cEN, ccEN, cPwm, ccPwm*/
 
@@ -87,8 +75,6 @@ public:
     void ccRotate();    /* Rotate CCW */
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
-
-    void updateTranscientPWM(); 
 
         
 };

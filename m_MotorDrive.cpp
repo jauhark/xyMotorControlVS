@@ -16,15 +16,10 @@ motorObject::motorObject(int _cEnablePin, int _ccEnablePin, int _cPwmPin,
     c_pwmValue = 0;
     cc_pwmValue = 0; 
     T_State_pwm_Increment = T_STATE_PWM_INCREMENT; 
-    cw_setState(M_SOFF); 
-    ccw_setState(M_SOFF); 
-
 }
 /*----------------------------------------*/
 /* Init */
 void motorObject::motorInit() {
-    cw_setState(M_SOFF);
-    ccw_setState(M_SOFF);
     pinMode(cEnablePin, OUTPUT);
     pinMode(ccEnablePin, OUTPUT);
     pinMode(cPwmPin, OUTPUT);
@@ -40,7 +35,6 @@ void motorObject::cRotate() {
 /*----------------------------------------*/
 /* stop cw */
 void motorObject::stop_cRotate() { 
-    disableMotor(); 
     _motorStop(cPwmPin); 
 }
 /*----------------------------------------*/
@@ -52,7 +46,6 @@ void motorObject::ccRotate() {
 /*----------------------------------------*/
 /* stop ccw */
 void motorObject::stop_ccRotate() {
-    disableMotor(); 
     _motorStop(ccPwmPin); 
 }
 /*----------------------------------------*/
@@ -76,20 +69,6 @@ void motorObject::motorHALT() {
     analogWrite(ccPwmPin, 0);
 }
 
-/*----------------------------------------*/
-/* transcient state pwm adjust (from timer interrupt) */
-/* for soft start */
-void motorObject::updateTranscientPWM() {
-
-    /*
-    * 4 states(T_State, S_State):
-    * 00    (OFF Steady)
-    * 01    (ON Steady)
-    * 10    (turning ON)
-    * 11    (turning OFF)
-    */
-
-}
 
 /*-------------------------------------------*/
 
