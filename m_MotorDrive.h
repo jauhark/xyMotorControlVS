@@ -40,7 +40,7 @@ typedef enum m_State{
 class motorObject
 {
 private:
-
+    int motorState; 
     int cEnablePin; /* clockwise enable pin */
     int ccEnablePin; /* counter clockwise enable Pin */
     int cPwmPin; /* clockwise Pwm pin */
@@ -61,6 +61,10 @@ public:
     void motorInit();   /* Motor Initialisation */
 
     void enableMotor() {    /* Motor ENABLE */
+        pinMode(ccEnablePin, OUTPUT); 
+        pinMode(cEnablePin, OUTPUT); 
+        pinMode(ccPwmPin, OUTPUT); 
+        pinMode(cPwmPin, OUTPUT); 
         digitalWrite(cEnablePin, HIGH); 
         digitalWrite(ccEnablePin, HIGH);
     }
@@ -75,6 +79,9 @@ public:
     void ccRotate();    /* Rotate CCW */
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
+    int getState() {
+        return motorState; 
+    }
 
         
 };

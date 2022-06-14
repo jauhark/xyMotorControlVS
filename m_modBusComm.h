@@ -38,16 +38,22 @@ private:
     int MotorPWM;
 
 public:
+    int toClientData[10];
+    int no_ClientData; 
 
     myClass(int, int, int);
     int connectToClient();
     void readFromClient();
+
     int getCtrlData(int index) {
         return ctrlData[index];
     }
+    
     void poll() {
         ModbusRTUServer.poll();
     }
+
+    void sendDataToClient(); 
 };
 
 /*----------------------------------------*/

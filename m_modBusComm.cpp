@@ -54,6 +54,26 @@ void myClass::readFromClient() {
     Serial.println();
 }
 
+/*
+writes data to holding registers 4 - 11//steadyOFF, steadyON, TurningON, turningOFF
+*/
+
+/*
+* mem: Value
+* 4: INITIALISED? 
+* 5: MOTORXa ON? 
+* 6: MOTORXa COUNT
+* 7: MOTORXb ON? 
+* 8: MOTORXb COUNT
+*/
+
+void myClass::sendDataToClient() {
+    int starting_Add = 4;
+
+    //for (int i = 0; i < no_ClientData; i++) {
+    //    ModbusRTUServer.holdingRegisterWrite(starting_Add + i, toClientData[i]);
+    //}
+}
 
 
 /*================================================================*/

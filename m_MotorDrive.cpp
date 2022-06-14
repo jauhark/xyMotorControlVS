@@ -9,6 +9,7 @@
 motorObject::motorObject(int _cEnablePin, int _ccEnablePin, int _cPwmPin,
     int _ccPwmPin)
 {
+    motorState = 0; 
     cEnablePin = _cEnablePin;
     ccEnablePin = _ccEnablePin;
     cPwmPin = _cPwmPin;
@@ -52,6 +53,7 @@ void motorObject::stop_ccRotate() {
 /* motor rotate */
 /* TODO: Slow start */
 void motorObject::_motorRotate(int pin, int val) {
+    motorState = 1;
     analogWrite(pin, val); 
 }
 
@@ -59,12 +61,15 @@ void motorObject::_motorRotate(int pin, int val) {
 /* motor turning off */
 /* TODO: Slow stop */
 void motorObject::_motorStop(int pin) {
+    motorState = 0;
     analogWrite(pin, 0);
 }
 
 /*----------------------------------------*/
 /* Sudden stop motor */
 void motorObject::motorHALT() {
+
+    motorState = 0;
     analogWrite(cPwmPin, 0);
     analogWrite(ccPwmPin, 0);
 }
