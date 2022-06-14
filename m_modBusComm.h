@@ -18,7 +18,7 @@
 
 
 #define SLAVE_ID 1
-#define BAUDRATE 9600
+#define BAUDRATE 19200
 
 #define HRNUM 4
 #define HRADD 0x00

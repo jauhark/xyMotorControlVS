@@ -28,8 +28,7 @@
 #define T_STATE_RESOLUTION 100
 #define T_STATE_PWM_INIT_VALUE 24
 #define T_STATE_PWM_INCREMENT 1
-#define PWM_LIMIT 255
-
+#define PWM_LIMIT 250
 
 typedef enum m_State{
     M_SOFF, M_SON, M_TON, M_TOFF  //steadyOFF, steadyON, TurningON, turningOFF
@@ -42,18 +41,11 @@ class motorObject
 {
 private:
 
-	int motorON;  /* external control input */
-    bool motorACTIVEState; /*MOTOR CURRENTLY IN ACTIVE */
-
     int cEnablePin; /* clockwise enable pin */
     int ccEnablePin; /* counter clockwise enable Pin */
     int cPwmPin; /* clockwise Pwm pin */
     int ccPwmPin; /* cc pwm pin */
-    int T_State_pwm_Increment; /* increment value of pwm */
 
-
-    int c_pwmValue;   /* Motor running pwm Value */
-    int cc_pwmValue;   /* Motor running pwm Value */
 
     void _motorRotate(int, int); /* analogwrite given pin */
     void _motorStop(int);    /* analogWrite given pin */
@@ -61,13 +53,20 @@ private:
     m_State cw_motorState; /*0-off, 1-on, 2-turningOn, 3-turningOFF */
     m_State ccw_motorState;
 
+
+
+public:
+    int T_State_pwm_Increment; /* increment value of pwm */
+
+    int c_pwmValue;   /* Motor running pwm Value */
+    int cc_pwmValue;   /* Motor running pwm Value */
+
     void cw_setState(m_State _state) { cw_motorState = _state; }
     m_State cw_getState() { return cw_motorState; }
 
     void ccw_setState(m_State _state) { ccw_motorState = _state; }
     m_State ccw_getState() { return ccw_motorState; }
 
-public:
 
     motorObject(int, int, int, int);/*cEN, ccEN, cPwm, ccPwm*/
 
@@ -89,9 +88,6 @@ public:
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
 
-    bool isMotorActive() {
-        return motorACTIVEState;
-    }
     void updateTranscientPWM(); 
 
         

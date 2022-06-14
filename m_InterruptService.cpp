@@ -20,6 +20,7 @@ void setTimerInterrupt() {
 	TCCR1A |= (1 << WGM01); /* turn on ctc mode */
 	TCCR1B |= (1 << CS11) | (1 << CS10);  /*Set CS10 and CS10 bits for 64 prescaler*/
 	TIMSK1 |= (1 << OCIE1A); /*enable timer compare interrupt*/
+
 	sei();
 
 }

@@ -10,7 +10,7 @@
    Constructor class
    @params: slaveId, BaudRate, noOfHoldingRegsRequired
 */
-myClass::myClass(int ID = 1, int baud_Rate = 9600, int no_of_HR = 4) {
+myClass::myClass(int ID = 1, int baud_Rate = BAUDRATE, int no_of_HR = 4) {
 
     slaveID = ID;
     baudRate = baud_Rate;
