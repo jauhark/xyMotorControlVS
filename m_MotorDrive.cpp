@@ -30,6 +30,7 @@ void motorObject::motorInit() {
 /* rotate cw */
 void motorObject::cRotate() {
     enableMotor(); 
+    stop_ccRotate(); 
     _motorRotate(cPwmPin, c_pwmValue); 
 }
 /*----------------------------------------*/
@@ -41,6 +42,7 @@ void motorObject::stop_cRotate() {
 /* rotate ccw */
 void motorObject::ccRotate() {
     enableMotor(); 
+    stop_cRotate(); 
     _motorRotate(ccPwmPin, cc_pwmValue); 
 }
 /*----------------------------------------*/

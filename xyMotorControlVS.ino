@@ -158,17 +158,15 @@ void loop()
 		MotorXb.c_pwmValue = x_motorCW.pwmVal;
 		MotorXb.cRotate(); 
 	}
-	else {
-		/* if switch is not pressed, Stop motor and sets its state as M_SOFF */
-		ledIndicator_OFF(IND_LED3); 
-		x_motorCW.state = M_SOFF; 
-		MotorXa.stop_cRotate(); 
-		MotorXb.stop_cRotate();
-	}
 
 
 	/* WHEN PRESSED REVERSE */
-	if (myController.getCtrlData()==3) {
+	else if (myController.getCtrlData()==3) {
+
+		x_motorCW.state = M_SOFF;
+		ledIndicator_OFF(IND_LED3);
+
+
 		/* ROTATE CCW */
 		ledIndicator_ON(IND_LED4); 
 
@@ -195,10 +193,11 @@ void loop()
 	}
 	else {
 		ledIndicator_OFF(IND_LED4); 
+		ledIndicator_OFF(IND_LED3); 
 
 		x_motorCCW.state = M_SOFF;
-		MotorXa.stop_ccRotate(); 
-		MotorXb.stop_ccRotate(); 
+		MotorXa.motorHALT(); 
+		MotorXb.motorHALT(); 
 	}
 	
 	toggleLedIndicator(IND_LED8); 
