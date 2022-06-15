@@ -36,6 +36,7 @@ void motorObject::cRotate() {
 /*----------------------------------------*/
 /* stop cw */
 void motorObject::stop_cRotate() { 
+    c_pwmValue = 0; 
     _motorStop(cPwmPin); 
 }
 /*----------------------------------------*/
@@ -48,6 +49,7 @@ void motorObject::ccRotate() {
 /*----------------------------------------*/
 /* stop ccw */
 void motorObject::stop_ccRotate() {
+    cc_pwmValue = 0;
     _motorStop(ccPwmPin); 
 }
 /*----------------------------------------*/
@@ -67,6 +69,8 @@ void motorObject::_motorStop(int pin) {
 /*----------------------------------------*/
 /* Sudden stop motor */
 void motorObject::motorHALT() {
+    c_pwmValue = 0; 
+    cc_pwmValue = 0; 
     analogWrite(cPwmPin, 0);
     analogWrite(ccPwmPin, 0);
 }

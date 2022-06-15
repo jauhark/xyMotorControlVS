@@ -75,7 +75,10 @@ public:
     void ccRotate();    /* Rotate CCW */
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
-
+    int getState() {
+        if (c_pwmValue > 0 || cc_pwmValue > 0)return 1;
+        else return 0; 
+    }
 
         
 };

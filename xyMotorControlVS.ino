@@ -77,19 +77,7 @@ void setup() {
 /* ============================================================== */
 /* LOOP -------------------------------------*/
 
-#define MXa_C_pwm 12
-#define MXa_C_en    13
-#define MXa_CC_pwm  11
-#define MXa_CC_en   10
-
-#define MXb_C_pwm  8
-#define MXb_C_en  9
-#define MXb_CC_pwm  7
-#define MXb_CC_en 6
-
-
-noDelay fun1Time(10);
-unsigned long previousTime = 0;
+noDelay fun1Time(1);
 
 void loop() 
 {
@@ -108,8 +96,8 @@ void loop()
 
 
 
-	myController.toClientData[0] = 1; /*index 0 in labview*/
-	myController.toClientData[1] = 1; 
+	myController.toClientData[0] = MotorXa.getState(); /*index 0 in labview*/
+	myController.toClientData[1] = MotorXb.getState();
 	myController.toClientData[2] = 231; 
 	myController.toClientData[3] = ir_Sensor_1.getCount(); /*index 3 in labview*/
 
@@ -152,6 +140,7 @@ void loop()
 			x_motorCW.pwmVal = 0; 
 		}
 		/* updates the pwm value to motor */
+
 		MotorXa.c_pwmValue = x_motorCW.pwmVal;
 		MotorXa.cRotate(); 
 
@@ -200,9 +189,9 @@ void loop()
 		MotorXb.motorHALT(); 
 	}
 	
+
 	toggleLedIndicator(IND_LED8); 
-	//delayMicroseconds(500); 
-	delay(1);
+	delayMicroseconds(500); 
 	/*-------------------------------------------------*/
 }
 

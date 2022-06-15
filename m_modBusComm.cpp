@@ -66,7 +66,7 @@ writes data to holding registers 4 - 11//steadyOFF, steadyON, TurningON, turning
 void myClass::sendDataToClient() {
     int starting_Add = 1;
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         ModbusRTUServer.holdingRegisterWrite(starting_Add + i, toClientData[i]);
     }
 
