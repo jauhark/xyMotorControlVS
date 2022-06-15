@@ -30,9 +30,6 @@
 #define T_STATE_PWM_INCREMENT 1
 #define PWM_LIMIT 250
 
-typedef enum m_State{
-    M_SOFF, M_SON, M_TON, M_TOFF  //steadyOFF, steadyON, TurningON, turningOFF
-};
 /*
    control single motor
 */
@@ -40,7 +37,6 @@ typedef enum m_State{
 class motorObject
 {
 private:
-    int motorState; 
     int cEnablePin; /* clockwise enable pin */
     int ccEnablePin; /* counter clockwise enable Pin */
     int cPwmPin; /* clockwise Pwm pin */
@@ -79,9 +75,7 @@ public:
     void ccRotate();    /* Rotate CCW */
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
-    int getState() {
-        return motorState; 
-    }
+
 
         
 };
