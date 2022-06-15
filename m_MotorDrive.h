@@ -30,6 +30,12 @@
 #define T_STATE_PWM_INCREMENT 1
 #define PWM_LIMIT 250
 
+typedef enum motorState {
+    /*
+    * MotorOFF, motorON_CW, motorTurningON_CW...
+    */
+    M_OFF, M_ONCW, M_ONCCW, M_TONCW, M_TONCCW 
+}motorState;
 /*
    control single motor
 */
@@ -42,6 +48,7 @@ private:
     int cPwmPin; /* clockwise Pwm pin */
     int ccPwmPin; /* cc pwm pin */
 
+    motorState state; 
 
     void _motorRotate(int, int); /* analogwrite given pin */
     void _motorStop(int);    /* analogWrite given pin */
@@ -49,8 +56,7 @@ private:
 public:
     int T_State_pwm_Increment; /* increment value of pwm */
 
-    int c_pwmValue;   /* Motor running pwm Value */
-    int cc_pwmValue;   /* Motor running pwm Value */
+    int pwmValue; 
 
     motorObject(int, int, int, int);/*cEN, ccEN, cPwm, ccPwm*/
 
@@ -75,9 +81,11 @@ public:
     void ccRotate();    /* Rotate CCW */
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
+    void setState(motorState _state) {
+        state = _state;
+    }
     int getState() {
-        if (c_pwmValue > 0 || cc_pwmValue > 0)return 1;
-        else return 0; 
+        return state;
     }
 
         

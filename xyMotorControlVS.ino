@@ -20,19 +20,6 @@
 
 int PROG_INITIALISED = 0; 
 
-typedef enum m_State {
-	M_SOFF, M_SON, M_TON  //steadyOFF, steadyON, TurningON, turningOFF
-};
-
-/* state variables for motors*/
-typedef struct x_direction {
-	int pwmVal;
-	int state;
-};
-
-x_direction x_motorCW;
-x_direction x_motorCCW;
-
 /* ----------------------------------------- */
 
 void setup() {
@@ -44,13 +31,7 @@ void setup() {
 
 	MotorXb.motorInit();
 	MotorXb.enableMotor();
-	pinMode(MXa_C_pwm, OUTPUT); 
 
-	x_motorCW.pwmVal = 0; 
-	x_motorCW.state = M_SOFF; 
-
-	x_motorCCW.pwmVal = 0;
-	x_motorCCW.state = M_SOFF;
 
 	/* Initialisint sensor */
 	if (ir_Sensor_1.initSensor() == false) {
@@ -94,8 +75,6 @@ void loop()
 	*	4: MotorXb counter (irSensor2)
 	*/
 
-
-
 	myController.toClientData[0] = MotorXa.getState(); /*index 0 in labview*/
 	myController.toClientData[1] = MotorXb.getState();
 	myController.toClientData[2] = 231; 
@@ -103,88 +82,24 @@ void loop()
 
 	myController.sendDataToClient(); 
 
-	/* MOTOR DIRECTION CONTROL UPDATE */
-	/*-------------------------------------------------*/
-	/*  3 states for each motor movement 
-	*	M_SOFF: motor steady off
-	*	M_TON:	motor turnign ON. Not fully ON. PWM ramps
-	*	M_SON:	motor Fully ON. PWM Steady limited value
-	*/
 	/* WHEN PRESSED FORWARD*/
 	if (myController.getCtrlData() ==1) {
-
 		/* ROTATE CW */
-
 		ledIndicator_ON(IND_LED3); 
-		if (x_motorCW.state==M_TON) {
-			/* if switch is ON & if motor is M_TON state, PWM ramps to limted value.
-			* Then change state to M_SON
-			*/
-			if(fun1Time.update())
-			x_motorCW.pwmVal += 1;
-			if (x_motorCW.pwmVal > 250) {
-				x_motorCW.pwmVal = 250;
-				x_motorCW.state = M_SON;
-			}
-		}
-		else if (x_motorCW.state == M_SON) {
-			/* if switch is ON & if motor is M_SON state, 
-			*	keep the motor running in pwm_limited value
-			*/
-		}
-		else {
-			/* if switch is ON & if motor is not in M_TON or M_SON state, 
-			* ie, if motor is OFF, then set motor state as M_TON
-			*/
-			x_motorCW.state = M_TON; 
-			x_motorCW.pwmVal = 0; 
-		}
-		/* updates the pwm value to motor */
-
-		MotorXa.c_pwmValue = x_motorCW.pwmVal;
 		MotorXa.cRotate(); 
-
-		MotorXb.c_pwmValue = x_motorCW.pwmVal;
 		MotorXb.cRotate(); 
 	}
-
-
 	/* WHEN PRESSED REVERSE */
 	else if (myController.getCtrlData()==3) {
-
-		x_motorCW.state = M_SOFF;
 		ledIndicator_OFF(IND_LED3);
-
-
 		/* ROTATE CCW */
 		ledIndicator_ON(IND_LED4); 
-
-		if (x_motorCCW.state == M_TON) {
-			if(fun1Time.update())x_motorCCW.pwmVal += 1;
-			if (x_motorCCW.pwmVal > 250) {
-				x_motorCCW.pwmVal = 250;
-				x_motorCCW.state = M_SON;
-			}
-		}
-		else if (x_motorCCW.state == M_SON) {
-			/* keep it as it is */
-		}
-		else {
-			x_motorCCW.state = M_TON;
-			x_motorCCW.pwmVal = 0;
-		}
-
-		MotorXa.cc_pwmValue = x_motorCCW.pwmVal; ;
 		MotorXa.ccRotate(); 
-
-		MotorXb.cc_pwmValue = x_motorCCW.pwmVal;
 		MotorXb.ccRotate(); 
 	}
 	else {
 		ledIndicator_OFF(IND_LED4); 
 		ledIndicator_OFF(IND_LED3); 
-
-		x_motorCCW.state = M_SOFF;
 		MotorXa.motorHALT(); 
 		MotorXb.motorHALT(); 
 	}
