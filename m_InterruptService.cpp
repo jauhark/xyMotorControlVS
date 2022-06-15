@@ -13,18 +13,13 @@ void setTimerInterrupt() {
 	->timer interrupt 1000hz
 	*/
 	cli(); /*clear all interrupts*/
-	//TCCR1A = 0;
-	//TCCR1B = 0;
-	//TCNT1 = 0;
-	//OCR1A = 249;
-	//TCCR1A |= (1 << WGM01); /* turn on ctc mode */
-	//TCCR1B |= (1 << CS11) | (1 << CS10);  /*Set CS10 and CS10 bits for 64 prescaler*/
-	//TIMSK1 |= (1 << OCIE1A); /*enable timer compare interrupt*/
-	TCCR0B = 0;
-	OCR2A = 100;
-	TCCR2A = 1 << WGM21;
-	TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);
-	TIMSK2 = (1 << OCIE2A);
+	TCCR1A = 0;
+	TCCR1B = 0;
+	TCNT1 = 0;
+	OCR1A = 249;
+	TCCR1A |= (1 << WGM01); /* turn on ctc mode */
+	TCCR1B |= (1 << CS11) | (1 << CS10);  /*Set CS10 and CS10 bits for 64 prescaler*/
+	TIMSK1 |= (1 << OCIE1A); /*enable timer compare interrupt*/
 
 	sei();
 

@@ -10,17 +10,19 @@
    Constructor class
    @params: slaveId, BaudRate, noOfHoldingRegsRequired
 */
-myClass::myClass(int ID = 1, int baud_Rate=9600, int no_of_HR=4) {
+myClass::myClass(int ID = 1, int baud_Rate = BAUDRATE, int no_of_HR = 4) {
 
     slaveID = ID;
     baudRate = baud_Rate;
     noOfHR = no_of_HR;
 
-    ctrlValue = 0; 
+	posFeedback_X = 6;
+    posFeedback_Y = 2;
 
-    ctrlData = 0;
-
-    no_ClientData = NUM_CLIENT_DATA; 
+    ctrlData[0] = 0;
+    ctrlData[1] = 0;
+    ctrlData[2] = 0;
+    ctrlData[3] = 0;
 
 }
 
@@ -33,7 +35,7 @@ int myClass::connectToClient() {
         return 1; //failed to connect
     }
     // configure holding register address
-    ModbusRTUServer.configureHoldingRegisters(HRADD, noOfHR);
+    ModbusRTUServer.configureHoldingRegisters(HRADD, 6);
 
     return 0; //connected
 }
@@ -42,12 +44,14 @@ int myClass::connectToClient() {
   Accepts data from Client to local registers
 */
 void myClass::readFromClient() {
-	ctrlValue = ModbusRTUServer.holdingRegisterRead(HRADD);
-    if (ctrlValue > 0 && ctrlValue < 10)ctrlData = CTRL_UP;
-    else if (ctrlValue >= 10 && ctrlValue < 100)ctrlData = CTRL_RIGHT;
-    else if (ctrlValue >= 100 && ctrlValue < 1000)ctrlData = CTRL_DOWN;
-    else if (ctrlValue >= 1000)ctrlData = CTRL_LEFT;
-    else ctrlData = 0; 
+    for (int i = 0; i < noOfHR; i++) {
+        ctrlData[i] = ModbusRTUServer.holdingRegisterRead(HRADD + i);
+        //Serial.print("HR ");
+        //Serial.print(i);
+        //Serial.print(": ");
+        //Serial.println(ctrlData[i]);
+    }
+    Serial.println();
 }
 
 /*
@@ -64,12 +68,11 @@ writes data to holding registers 4 - 11//steadyOFF, steadyON, TurningON, turning
 */
 
 void myClass::sendDataToClient() {
-    int starting_Add = 1;
+    int starting_Add = 4;
 
-    for (int i = 0; i < 6; i++) {
-        ModbusRTUServer.holdingRegisterWrite(starting_Add + i, toClientData[i]);
-    }
-
+    //for (int i = 0; i < no_ClientData; i++) {
+    //    ModbusRTUServer.holdingRegisterWrite(starting_Add + i, toClientData[i]);
+    //}
 }
 
 
