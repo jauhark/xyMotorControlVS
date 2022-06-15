@@ -20,18 +20,24 @@
 #define SLAVE_ID 1
 #define BAUDRATE 19200
 
-#define HRNUM 4
+#define HRNUM 8
 #define HRADD 0x00
 
+#define NUM_CLIENT_DATA 7
+
+#define CTRL_UP 1
+#define CTRL_RIGHT 2
+#define CTRL_DOWN 3
+#define CTRL_LEFT 4
 
 /*================================================================*/
 /* MODBUS inits-----------------------------*/
 class myClass {
 private:
 
-    int ctrlData[4]; //UP, RIGHT, DOWN, LEFT Data from Control Input
-    int posFeedback_X; //position x coordinate
-    int posFeedback_Y; //position y coordinate
+    int ctrlValue; 
+    int ctrlData; //UP, RIGHT, DOWN, LEFT Data from Control Input
+
     int slaveID;  //slave ID of the device
     int baudRate;
     int noOfHR; //number of holding registers required in MODBUS comm
@@ -45,8 +51,8 @@ public:
     int connectToClient();
     void readFromClient();
 
-    int getCtrlData(int index) {
-        return ctrlData[index];
+    int getCtrlData() {
+        return ctrlData;
     }
     
     void poll() {

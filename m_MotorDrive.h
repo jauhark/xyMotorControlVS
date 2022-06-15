@@ -30,15 +30,6 @@
 #define T_STATE_PWM_INCREMENT 1
 #define PWM_LIMIT 250
 
-<<<<<<< HEAD
-typedef enum motorState {
-    M_OFF, M_CW, M_TCW, M_CCW, M_TCCW   /*motor off, motorCW, motorTurningOnInCW,..,..*/
-}motorState;
-=======
-typedef enum m_State{
-    M_SOFF, M_SON, M_TON, M_TOFF  //steadyOFF, steadyON, TurningON, turningOFF
-};
->>>>>>> parent of fccc812 (working fine)
 /*
    control single motor
 */
@@ -46,12 +37,11 @@ typedef enum m_State{
 class motorObject
 {
 private:
-    int motorState; 
     int cEnablePin; /* clockwise enable pin */
     int ccEnablePin; /* counter clockwise enable Pin */
     int cPwmPin; /* clockwise Pwm pin */
     int ccPwmPin; /* cc pwm pin */
-    motorState state; 
+
 
     void _motorRotate(int, int); /* analogwrite given pin */
     void _motorStop(int);    /* analogWrite given pin */
@@ -85,9 +75,7 @@ public:
     void ccRotate();    /* Rotate CCW */
     void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
-    int getState() {
-        return motorState; 
-    }
+
 
         
 };
