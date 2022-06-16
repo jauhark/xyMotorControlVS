@@ -29,6 +29,7 @@
 #define CTRL_RIGHT 2
 #define CTRL_DOWN 3
 #define CTRL_LEFT 4
+#define CTRL_SET_ORIGIN 10
 
 /*================================================================*/
 /* MODBUS inits-----------------------------*/
@@ -48,7 +49,7 @@ public:
     int no_ClientData; 
 
     myClass(int, int, int);
-    int connectToClient();
+    bool connectToClient();
     void readFromClient();
 
     int getCtrlData() {

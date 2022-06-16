@@ -15,6 +15,8 @@
 #define SENSOR2_PIN 25
 
 #define IR_COUNTER_LIMIT 1000
+#define X_MAX 1000
+#define X_ORIGIN 0
 
 /*-----------------------------------------------*/
 /* PROGRAM FOR SENSOR CONTROL */
@@ -35,6 +37,22 @@
 * sensor value analysed and count increment for each sensor
 */
 
+/*
+* class ir_Sensor: 
+* @Constructor_Params: IR_SENSOR_PIN
+* @public_funs: 
+*	initSensor()	- Initialises the sensor. Takes buffer full of readings
+*					- and analyses buffer to find starting sensor value.  
+*					- if high noise, false is returned. 
+*	updateData()	- called every loop. It left shifts all older readings 
+*					- and add new reading to buffer. It also calculates 
+*					- buffer magnitude, which is used to decide current sensor
+*					- value and eliminate noise. 
+*	getCount()		- returns the current count value 
+*	resetSensor()	- resets all sensor values. counter and buffer and calls init
+*	
+*/
+
 class ir_Sensor {
 private: 
 	int pin; 
@@ -48,16 +66,12 @@ private:
 public:	
 	ir_Sensor(int); 
 	bool initSensor(); 
-	void updateData();	/* reads to buffer, checks magnitude, update state */
+	void updateData(int );	/* reads to buffer, checks magnitude, update state */
 	int getCount() {
 		return counter; 
 	}
 	void resetSensor(); 
-	void sensorSpeed(); 
-	bool getCountIncFlag() {
-		counterIncFlag = 0; 
-		return counterIncFlag;
-	}														
+	void sensorSpeed(); 									
 };
 /*================================================================*/
 extern ir_Sensor ir_Sensor_1;

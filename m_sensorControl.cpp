@@ -18,15 +18,13 @@ ir_Sensor::ir_Sensor(int pinNo) {
 /*------------------------------------------------------*/
 /* initialisation */
 bool ir_Sensor::initSensor() {
-
-	resetSensor(); 
-
+	pinMode(pin, INPUT_PULLUP); 
 	arrayMagnitude = 0; 
 	for (int i = 0; i < IR_BUFF_SIZE; i++){
 	raw_SensorVal[i] = digitalRead(pin);
 	Serial.println(raw_SensorVal[i]);
 	if (raw_SensorVal[i] == IR_SENSOR_DETECTED)arrayMagnitude++;
-	delay(100);
+	delay(10);
 	}
 	Serial.println(); 
 
@@ -46,7 +44,10 @@ bool ir_Sensor::initSensor() {
 
 /*------------------------------------------------------*/
 /* read and update buffer and checks magnitude and update state */
-void ir_Sensor::updateData() {
+void ir_Sensor::updateData(int inc) {
+
+	
+
 	arrayMagnitude = 0; 
 	for (int i = 0; i < (IR_BUFF_SIZE - 1); i++) {
 		raw_SensorVal[i] = raw_SensorVal[i + 1];
@@ -61,15 +62,15 @@ void ir_Sensor::updateData() {
 		if (SensorState == initialSensorState) {
 			SensorState = !(initialSensorState);
 			counterIncFlag = 1; 
-			counter++;
+			counter += inc; 
 		}
 	}
 	else if (arrayMagnitude < IR_NOISE_LOW_THRESH) {
 		SensorState = initialSensorState;
 	}
 
-	if (counter > IR_COUNTER_LIMIT)counter = 0; 
-
+	if (counter > 2*IR_COUNTER_LIMIT)counter = 2*IR_COUNTER_LIMIT; 
+	if (counter < -2 * IR_COUNTER_LIMIT)counter = -2 * IR_COUNTER_LIMIT; 
 }
 
 /*------------------------------------------------------*/
@@ -80,6 +81,7 @@ void ir_Sensor::resetSensor() {
 	arrayMagnitude = 0;
 	counter = 0;
 	stateChangeDetected = 0;
+	initSensor(); 
 }
 
 

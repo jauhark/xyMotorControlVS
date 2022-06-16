@@ -28,14 +28,14 @@ myClass::myClass(int ID = 1, int baud_Rate=9600, int no_of_HR=4) {
     Connect to client
 */
 
-int myClass::connectToClient() {
+bool myClass::connectToClient() {
     if (!ModbusRTUServer.begin(slaveID, baudRate)) {
-        return 1; //failed to connect
+        return false; //failed to connect
     }
     // configure holding register address
     ModbusRTUServer.configureHoldingRegisters(HRADD, noOfHR);
 
-    return 0; //connected
+    return true; //connected
 }
 
 /*
@@ -43,11 +43,7 @@ int myClass::connectToClient() {
 */
 void myClass::readFromClient() {
 	ctrlValue = ModbusRTUServer.holdingRegisterRead(HRADD);
-    if (ctrlValue > 0 && ctrlValue < 10)ctrlData = CTRL_UP;
-    else if (ctrlValue >= 10 && ctrlValue < 100)ctrlData = CTRL_RIGHT;
-    else if (ctrlValue >= 100 && ctrlValue < 1000)ctrlData = CTRL_DOWN;
-    else if (ctrlValue >= 1000)ctrlData = CTRL_LEFT;
-    else ctrlData = 0; 
+    ctrlData = ctrlValue;
 }
 
 /*

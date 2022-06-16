@@ -32,12 +32,30 @@
 
 typedef enum motorState {
     /*
-    * MotorOFF, motorON_CW, motorTurningON_CW...
+    * M_OFF: Motor is OFF State
+    * M_ONCW: Motor in ON in CW direction
+    * M_ONCCW: Motor is ON in CCW direction
+    * M_TONCW: Motor is turning ON in CW direction
+    * M_TONCCW: Motor is turning ON in CCW direction
     */
     M_OFF, M_ONCW, M_ONCCW, M_TONCW, M_TONCCW 
 }motorState;
+
 /*
-   control single motor
+* class motorObject: 
+* @Constructor_Params: CW_EN, CCW_EN, CW_PWM_PIN, CCW_PWM_PIN
+* @public_funs: 
+*   motorInit()     - Initialises motor by setting the pins
+*   enableMotor()   - Enables the motor EN pins
+*   disableMotor()  - disables the motor EN pins
+*   cRotate()       - rotates motor Clock wise, with Soft start
+*                   - to be used only with if else ladder
+*   ccRotate()      - rotates motor Counter Clock wise, with soft start
+*                   - to be used only with if else ladder
+*   motorHalt()     - Stop the motor
+*   setState(param) - sets the motorstate 
+*   getState()      - returns the motorState
+*       
 */
 /*----------------------------------------*/
 class motorObject
@@ -53,33 +71,24 @@ private:
     void _motorRotate(int, int); /* analogwrite given pin */
     void _motorStop(int);    /* analogWrite given pin */
 
-public:
-    int T_State_pwm_Increment; /* increment value of pwm */
+    void stop_ccRotate();   /* stop CCW */
+    void stop_cRotate();    /* stop CW */
 
-    int pwmValue; 
+    int T_State_pwm_Increment; /* increment value of pwm */
+    int pwmValue;
+
+public:
 
     motorObject(int, int, int, int);/*cEN, ccEN, cPwm, ccPwm*/
 
     void motorInit();   /* Motor Initialisation */
-
-    void enableMotor() {    /* Motor ENABLE */
-        pinMode(ccEnablePin, OUTPUT); 
-        pinMode(cEnablePin, OUTPUT); 
-        pinMode(ccPwmPin, OUTPUT); 
-        pinMode(cPwmPin, OUTPUT); 
-        digitalWrite(cEnablePin, HIGH); 
-        digitalWrite(ccEnablePin, HIGH);
-    }
-
+    void enableMotor();   /* Motor ENABLE */
     void disableMotor() {   /* Motor DISABLE */
         digitalWrite(cEnablePin, LOW);
         digitalWrite(ccEnablePin, LOW);
     }
-
     void cRotate(); /* Rotate CW */
-    void stop_cRotate();    /* stop CW */
     void ccRotate();    /* Rotate CCW */
-    void stop_ccRotate();   /* stop CCW */
     void motorHALT();   /* stop motor */
     void setState(motorState _state) {
         state = _state;

@@ -31,6 +31,12 @@ void motorObject::motorInit() {
 
 /*----------------------------------------*/
 /* rotate cw */
+/*
+* the switch is pressed,  and this function is called. 
+* if the motor current state is anything other than M_ONCW or M_TONCW, 
+* then motor is set to M_TONCW. then pwmValue is incremented until it 
+* reaches PWM_LIMIT. then motor state is set to M_ONCW. i.e Motor is fully ON
+*/
 void motorObject::cRotate() {
     if (state == M_TONCW) {
         pwmValue += 1; 
@@ -48,18 +54,10 @@ void motorObject::cRotate() {
     }
 
     enableMotor();
+    /* if CW rotation is ON, then CCW rotation should be OFF*/
     stop_ccRotate();
     _motorRotate(cPwmPin, pwmValue);
 }
-
-
-///*----------------------------------------*/
-///* rotate cw */
-//void motorObject::cRotate() {
-//    enableMotor(); 
-//    stop_ccRotate(); 
-//    _motorRotate(cPwmPin, pwmValue); 
-//}
 
 /*----------------------------------------*/
 /* stop cw */
@@ -92,14 +90,6 @@ void motorObject::ccRotate() {
     _motorRotate(ccPwmPin, pwmValue); 
 }
 
-///*----------------------------------------*/
-///* rotate ccw */
-//void motorObject::ccRotate() {
-//    enableMotor();
-//    stop_cRotate();
-//    _motorRotate(ccPwmPin, pwmValue);
-//}
-
 /*----------------------------------------*/
 /* stop ccw */
 void motorObject::stop_ccRotate() {
@@ -121,6 +111,9 @@ void motorObject::_motorStop(int pin) {
 
 /*----------------------------------------*/
 /* Sudden stop motor */
+/*
+* Motor state is reset ONLY when motorHALT() is called. 
+*/
 void motorObject::motorHALT() {
     pwmValue = 0; 
     state = M_OFF;
@@ -128,9 +121,15 @@ void motorObject::motorHALT() {
     analogWrite(ccPwmPin, 0);
 }
 
-
 /*-------------------------------------------*/
-
+void motorObject::enableMotor() {
+    pinMode(ccEnablePin, OUTPUT);
+    pinMode(cEnablePin, OUTPUT);
+    pinMode(ccPwmPin, OUTPUT);
+    pinMode(cPwmPin, OUTPUT);
+    digitalWrite(cEnablePin, HIGH);
+    digitalWrite(ccEnablePin, HIGH);
+}
 /*---------------------------------------------------------------------*/
 
 motorObject MotorXb(MXb_C_en, MXb_CC_en, MXb_C_pwm, MXb_CC_pwm);
