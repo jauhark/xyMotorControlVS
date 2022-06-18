@@ -12,7 +12,7 @@
 /*================================================================*/
 /* SENSOR PIN DEFINITIONS */	
 #define	SENSOR1_PIN 23
-#define SENSOR2_PIN 25
+#define SENSOR2_PIN 33
 
 #define IR_COUNTER_LIMIT 1000
 #define X_MAX 1000
@@ -62,7 +62,6 @@ private:
 	bool SensorState;	/* set after analysing buffer */
 	int arrayMagnitude; /* condition for set/reset SensorState */
 	int counter;		/* counter data */
-	bool counterIncFlag; /* counter Increment Flag */
 public:	
 	ir_Sensor(int); 
 	bool initSensor(); 
@@ -74,8 +73,8 @@ public:
 	void sensorSpeed(); 									
 };
 /*================================================================*/
-extern ir_Sensor ir_Sensor_1;
-
+extern ir_Sensor m_Sensor_Xa;
+extern ir_Sensor m_Sensor_Xb; 
 
 #endif
 

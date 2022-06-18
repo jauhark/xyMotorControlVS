@@ -11,8 +11,7 @@ ir_Sensor::ir_Sensor(int pinNo) {
 	memset(raw_SensorVal, 0, sizeof(raw_SensorVal));
 	arrayMagnitude = 0;
 	counter = 0;
-	stateChangeDetected = 0; 
-	counterIncFlag = 0;
+	stateChangeDetected = 0;
 }
 
 /*------------------------------------------------------*/
@@ -46,8 +45,6 @@ bool ir_Sensor::initSensor() {
 /* read and update buffer and checks magnitude and update state */
 void ir_Sensor::updateData(int inc) {
 
-	
-
 	arrayMagnitude = 0; 
 	for (int i = 0; i < (IR_BUFF_SIZE - 1); i++) {
 		raw_SensorVal[i] = raw_SensorVal[i + 1];
@@ -61,7 +58,6 @@ void ir_Sensor::updateData(int inc) {
 	if (arrayMagnitude > IR_NOISE_HIGH_THRESH) {	//taking sample of initial state and storing the state
 		if (SensorState == initialSensorState) {
 			SensorState = !(initialSensorState);
-			counterIncFlag = 1; 
 			counter += inc; 
 		}
 	}
@@ -69,8 +65,8 @@ void ir_Sensor::updateData(int inc) {
 		SensorState = initialSensorState;
 	}
 
-	if (counter > 2*IR_COUNTER_LIMIT)counter = 2*IR_COUNTER_LIMIT; 
-	if (counter < -2 * IR_COUNTER_LIMIT)counter = -2 * IR_COUNTER_LIMIT; 
+	//if (counter > IR_COUNTER_LIMIT) { counter = IR_COUNTER_LIMIT; }
+	//if (counter < IR_COUNTER_LIMIT) { counter = IR_COUNTER_LIMIT; }
 }
 
 /*------------------------------------------------------*/
@@ -89,4 +85,5 @@ void ir_Sensor::resetSensor() {
 
 
 /*================================================================*/
-ir_Sensor ir_Sensor_1(SENSOR1_PIN); 
+ir_Sensor m_Sensor_Xa(SENSOR1_PIN); 
+ir_Sensor m_Sensor_Xb(SENSOR2_PIN); 

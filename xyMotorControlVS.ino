@@ -18,11 +18,16 @@
 /* ============================================================== */
 /* SETUP -----------------------------------*/
 
+#define X_LIMITER_SWITCH 25
+
 int PROG_INITIALISED = 0; 
 
 /* ----------------------------------------- */
 
 void setup() {
+
+	pinMode(X_LIMITER_SWITCH, INPUT_PULLUP); 
+	//pinMode(X_LIMITER_SWITCH, OUTPUT); 
 	/* Motor Initialisation */
 
 	/* X direction motor */
@@ -34,11 +39,18 @@ void setup() {
 
 
 	/* Initialisint sensor */
-	while (ir_Sensor_1.initSensor() == false) {
-		Serial.println("FAILED TO INITIALISE SENSOR 1"); 
+	while (m_Sensor_Xa.initSensor() == false) {
+		Serial.println("FAILED TO INITIALISE SENSOR Xa"); 
 		Serial.println("CHECK THE SENSORS"); 
 	}
-	Serial.println("SUCCESSFULLY INITIALISED SENSOR 1");
+	Serial.println("SUCCESSFULLY INITIALISED SENSOR Xa");
+
+	/* Initialisint sensor */
+	while (m_Sensor_Xb.initSensor() == false) {
+		Serial.println("FAILED TO INITIALISE SENSOR Xb");
+		Serial.println("CHECK THE SENSORS");
+	}
+	Serial.println("SUCCESSFULLY INITIALISED SENSOR Xb");
 
 	/* Connecting modbus to client */
 	while (myController.connectToClient()==false)
@@ -56,12 +68,12 @@ void setup() {
 /* ============================================================== */
 /* LOOP -------------------------------------*/
 
-noDelay fun1Time(10);
+noDelay fun1Time(5);
+int CONTROL_KEY = 0; 
 
 void loop() 
 {
 	myController.poll(); 
-
 	/* COMMUNICATION DATA UPDATE*/
 	/*-------------------------------------------------*/
 	/*	0: PROG INITIALISED? 
@@ -76,52 +88,116 @@ void loop()
 	*/
 	myController.toClientData[0] = MotorXa.getState(); /*index 0 in labview*/
 	myController.toClientData[1] = MotorXb.getState();
-	myController.toClientData[2] =ir_Sensor_1.getCount();
-	myController.toClientData[3] = ir_Sensor_1.getCount(); /*index 3 in labview*/
-
+	myController.toClientData[2] =m_Sensor_Xa.getCount();
+	myController.toClientData[3] = m_Sensor_Xb.getCount(); /*index 3 in labview*/
+	
 	myController.sendDataToClient(); 
 
 	/* MOTOR CONTROLS */
+	CONTROL_KEY = myController.getCtrlData(); 
 
-	switch (myController.getCtrlData()) {
+	/* motor should'nt move if limiterSwitch is pressed and still the control is pressed up */
+
+	if (digitalRead(X_LIMITER_SWITCH) == LOW && CONTROL_KEY == CTRL_DOWN) {
+		MotorXa.motorHALT();
+		MotorXb.motorHALT();
+		m_Sensor_Xa.resetSensor(); 
+		m_Sensor_Xb.resetSensor(); 
+		CONTROL_KEY = 0;
+	}
+
+	switch (CONTROL_KEY) {
+
+	case 0: 
+		MotorXa.motorHALT(); 
+		MotorXb.motorHALT();
+		break;
+
 	case CTRL_UP: 
-		ledIndicator_ON(IND_LED3); 
-		if (ir_Sensor_1.getCount() >= X_MAX) {
-			MotorXa.motorHALT(); 
-			MotorXb.motorHALT(); 
-			break;
-		}
-		MotorXa.cRotate();
-		MotorXb.cRotate();
-		ir_Sensor_1.updateData(1);
+		ledIndicator_ON(IND_LED5); 
+			MotorXa.ccRotate();
+			MotorXb.cRotate();
+		m_Sensor_Xa.updateData(1);
+		m_Sensor_Xb.updateData(1);
+
 		break;
 		
 	case CTRL_DOWN: 
-		ledIndicator_OFF(IND_LED3);
+		ledIndicator_OFF(IND_LED6);
 		ledIndicator_ON(IND_LED4); 
-		if (ir_Sensor_1.getCount() <= X_ORIGIN) {
-			MotorXa.motorHALT(); 
-			MotorXb.motorHALT(); 
-			break;
-		}
-		MotorXa.ccRotate(); 
-		MotorXb.ccRotate(); 
-		ir_Sensor_1.updateData(-1); 
+			MotorXa.cRotate();	/*motorxa forward*/
+			MotorXb.ccRotate();	/*motorxb forward*/
+		
+		m_Sensor_Xa.updateData(-1);
+		m_Sensor_Xb.updateData(-1);
+		
 		break;
 
 	case CTRL_SET_ORIGIN: 
+		ledIndicator_OFF(IND_LED6); 
+		ledIndicator_OFF(IND_LED4); 
+		//ledIndicator_ON(IND_LED5); 
+
+		while (digitalRead(X_LIMITER_SWITCH)!=LOW) {
+				MotorXa.cRotate();
+				MotorXb.ccRotate();
+			
+		}
+		MotorXa.motorHALT();
+		MotorXb.motorHALT(); 
+
+		m_Sensor_Xa.resetSensor(); 
+		m_Sensor_Xb.resetSensor(); 
+		break;
+
+	case CTRL_CALIBRATE_BOUNDS: 
 		ledIndicator_OFF(IND_LED3); 
 		ledIndicator_OFF(IND_LED4); 
-		ledIndicator_ON(IND_LED5); 
-		ir_Sensor_1.resetSensor();
+		ledIndicator_OFF(IND_LED5); 
+		ledIndicator_ON(IND_LED6); 
 
+		/* find the origin by ctrl_set_origin procedure 
+		* then move the Xmotor until it presses the x_switch
+		* store the counter data
+		* then move Ymotor until it presses the y_switch
+		* store the counter data
+		*/
+
+		break;
 	default: 
 		ledIndicator_OFF(IND_LED3); 
 		ledIndicator_OFF(IND_LED4); 
+		ledIndicator_OFF(IND_LED5); 
+		ledIndicator_OFF(IND_LED6); 
 		MotorXa.motorHALT(); 
 		MotorXb.motorHALT(); 
 	}
 
+	/* Auto correcting motors if their count differ by 2 */
+	//int diff = m_Sensor_Xa.getCount() - m_Sensor_Xb.getCount(); 
+	//if (diff >= 2 || diff <= -2) {
+	//	/*
+	//	* if motorXa is ahead by 2 counts, 
+	//	* then HALT motorXa, ccRotate motorXb untill count of both 
+	//	* becomes equal 
+	//	*/
+	//	while (m_Sensor_Xa.getCount() > m_Sensor_Xb.getCount()) {
+	//		MotorXa.motorHALT();
+	//		MotorXb.ccRotate(); 
+	//		m_Sensor_Xa.updateData(1); 
+	//		m_Sensor_Xb.updateData(1); 
+	//	}
+	//	/* if motorXb is ahead by 2 counts, 
+	//	* then HALT motorXb, cRotate motorXa until count of both 
+	//	* becomes equal 
+	//	*/
+	//	while (m_Sensor_Xb.getCount() > m_Sensor_Xa.getCount()) {
+	//		MotorXb.motorHALT(); 
+	//		MotorXa.cRotate(); 
+	//		m_Sensor_Xa.updateData(1); 
+	//		m_Sensor_Xb.updateData(1); 
+	//	}
+	//}
 
 
 	/*	GO TO ORIGIN */
@@ -144,14 +220,12 @@ void loop()
 
 
 	toggleLedIndicator(IND_LED1);
-	delayMicroseconds(10); 
 	/*-------------------------------------------------*/
 }
 
 /* ============================================================== */
 /* EVENT ------------------------------------*/
-
-void serialEvent2() {
+void serialEvent1() {
 	//statements
 	myController.readFromClient();
 }
