@@ -61,6 +61,23 @@ void setupLEDIndicators() {
 	}
 }
 
+void errorIndicator() {
+
+	int NO_OF_INDICATORS = sizeof(ledIndicatorArray);
+
+	for (int i = 0; i < NO_OF_INDICATORS; i++) {
+		pinMode(ledIndicatorArray[i], OUTPUT);
+	}
+	for (int i = 0; i < NO_OF_INDICATORS; i++) {
+		digitalWrite(ledIndicatorArray[i], LOW);
+	}
+	delay(DELAY_LED);
+
+	for (int i = 0; i < NO_OF_INDICATORS; i++) {
+		digitalWrite(ledIndicatorArray[i], HIGH);
+	}
+	delay(DELAY_LED);
+}
 
 void ledIndicator_ON(uint8_t pinNo) {
 	digitalWrite(pinNo, HIGH); 

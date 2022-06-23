@@ -10,18 +10,13 @@
    Constructor class
    @params: slaveId, BaudRate, noOfHoldingRegsRequired
 */
-myClass::myClass(int ID = 1, int baud_Rate=9600, int no_of_HR=4) {
-
+myClass::myClass(int ID = 1, int baud_Rate=9600, int no_of_HR=8) {
     slaveID = ID;
     baudRate = baud_Rate;
     noOfHR = no_of_HR;
-
     ctrlValue = 0; 
-
     ctrlData = 0;
-
     no_ClientData = NUM_CLIENT_DATA; 
-
 }
 
 /*
@@ -47,25 +42,15 @@ void myClass::readFromClient() {
 }
 
 /*
-writes data to holding registers 4 - 11//steadyOFF, steadyON, TurningON, turningOFF
+writes data to holding registers 
 */
 
-/*
-* mem: Value
-* 4: INITIALISED? 
-* 5: MOTORXa ON? 
-* 6: MOTORXa COUNT
-* 7: MOTORXb ON? 
-* 8: MOTORXb COUNT
-*/
 
 void myClass::sendDataToClient() {
-    int starting_Add = 1;
-
+    int starting_Add = 3;
     for (int i = 0; i < 7; i++) {
         ModbusRTUServer.holdingRegisterWrite(starting_Add + i, toClientData[i]);
     }
-
 }
 
 

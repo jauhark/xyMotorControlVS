@@ -15,15 +15,20 @@
 /*================================================================*/
 /* MOTOR inits-----------------------------*/
 
-#define MXa_C_pwm 12
+#define MXa_C_pwm   12
 #define MXa_C_en    13
 #define MXa_CC_pwm  11
 #define MXa_CC_en   10
 
-#define MXb_C_pwm  8
-#define MXb_C_en  9
+#define MXb_C_pwm   8
+#define MXb_C_en    9
 #define MXb_CC_pwm  7
-#define MXb_CC_en 6
+#define MXb_CC_en   6
+
+#define MYa_C_pwm   4
+#define MYa_C_en    5
+#define MYa_CC_pwm  3
+#define MYa_CC_en   2
 
 #define T_STATE_RESOLUTION 100
 #define T_STATE_PWM_INIT_VALUE 24
@@ -90,6 +95,9 @@ public:
     void cRotate(); /* Rotate CW */
     void ccRotate();    /* Rotate CCW */
     void motorHALT();   /* stop motor */
+
+    void motorSTOP(); 
+
     void setState(motorState _state) {
         state = _state;
     }
@@ -103,7 +111,7 @@ public:
 /*================================================================*/
 extern motorObject MotorXb;
 extern motorObject MotorXa;
-
+extern motorObject MotorYa; 
 
 #endif
 

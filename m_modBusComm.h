@@ -20,7 +20,7 @@
 #define SLAVE_ID 1
 #define BAUDRATE 19200
 
-#define HRNUM 8
+#define HRNUM 10
 #define HRADD 0x00
 
 #define NUM_CLIENT_DATA 7
@@ -43,7 +43,7 @@ private:
     int slaveID;  //slave ID of the device
     int baudRate;
     int noOfHR; //number of holding registers required in MODBUS comm
-    int MotorPWM;
+
 
 public:
     int toClientData[10];

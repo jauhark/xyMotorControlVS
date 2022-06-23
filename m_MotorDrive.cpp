@@ -69,6 +69,7 @@ void motorObject::stop_cRotate() {
 /*----------------------------------------*/
 /* rotate ccw */
 void motorObject::ccRotate() {
+    
 
     if (state == M_TONCCW) {
         pwmValue += 1;
@@ -121,6 +122,11 @@ void motorObject::motorHALT() {
     analogWrite(ccPwmPin, 0);
 }
 
+void motorObject::motorSTOP() {
+    disableMotor();
+    state = M_OFF; 
+}
+
 /*-------------------------------------------*/
 void motorObject::enableMotor() {
     pinMode(ccEnablePin, OUTPUT);
@@ -134,3 +140,4 @@ void motorObject::enableMotor() {
 
 motorObject MotorXb(MXb_C_en, MXb_CC_en, MXb_C_pwm, MXb_CC_pwm);
 motorObject MotorXa(MXa_C_en, MXa_CC_en, MXa_C_pwm, MXa_CC_pwm); 
+motorObject MotorYa(MYa_C_en, MYa_CC_en, MYa_C_pwm, MYa_CC_pwm); 

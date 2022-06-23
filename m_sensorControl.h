@@ -13,6 +13,7 @@
 /* SENSOR PIN DEFINITIONS */	
 #define	SENSOR1_PIN 23
 #define SENSOR2_PIN 33
+#define SENSORY_PIN 35
 
 #define IR_COUNTER_LIMIT 1000
 #define X_MAX 1000
@@ -75,6 +76,7 @@ public:
 /*================================================================*/
 extern ir_Sensor m_Sensor_Xa;
 extern ir_Sensor m_Sensor_Xb; 
+extern ir_Sensor m_Sensor_Ya; 
 
 #endif
 

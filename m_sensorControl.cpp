@@ -77,7 +77,7 @@ void ir_Sensor::resetSensor() {
 	arrayMagnitude = 0;
 	counter = 0;
 	stateChangeDetected = 0;
-	initSensor(); 
+	//initSensor(); 
 }
 
 
@@ -87,3 +87,4 @@ void ir_Sensor::resetSensor() {
 /*================================================================*/
 ir_Sensor m_Sensor_Xa(SENSOR1_PIN); 
 ir_Sensor m_Sensor_Xb(SENSOR2_PIN); 
+ir_Sensor m_Sensor_Ya(SENSORY_PIN);

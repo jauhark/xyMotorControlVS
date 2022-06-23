@@ -34,6 +34,7 @@ void ledIndicator_ON(uint8_t);
 void ledIndicator_OFF(uint8_t);
 void blinkLedIndicator(uint8_t);
 void toggleLedIndicator(uint8_t); 
+void errorIndicator(); 
 /*========================================================*/
 
 #endif
