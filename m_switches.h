@@ -33,16 +33,16 @@ public:
 	void checkSwitch() {
 		if (digitalRead(pin) == HIGH) {
 			countHigh++; 
-			if (countHigh > 10) {
-				countHigh = 10;
+			if (countHigh > 5) {
+				countHigh = 5;
 				Flag = 0; 
 				countLow = 0; 
 			}
 		}
 		else {
 			countLow++; 
-			if (countLow > 10) {
-				countLow = 10; 
+			if (countLow > 5) {
+				countLow = 5; 
 				Flag = 1;	/* Flag set on Active LOW*/
 				countHigh = 0; 
 			}
@@ -54,7 +54,8 @@ public:
 	}
 };
 
-extern switchInput Xa_switch; 
+/* creating switch objects for all limiter switches */
+switchInput Xa_switch(Xa_limSwitchPin);
 
 /*==================================================*/
 

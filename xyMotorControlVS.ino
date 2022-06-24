@@ -74,7 +74,7 @@ void setup() {
 	}
 	Serial.println("CONNECTED TO CLIENT");
 	
-	//setTimerInterrupt();
+	setTimerInterrupt();
 
 	Xa_switch.init(); /* initialising Xa limiter switch */
 
@@ -325,22 +325,22 @@ ISR(TIMER2_COMPA_vect) {
 	Xa_switch.checkSwitch(); 
 
 	/* updating counter data */
-	//switch (CONTROL_KEY){
-	//case CTRL_UP: 
-	//	m_Sensor_Xa.updateData(1);	/* increment sensor count when motor goes forward */
-	//	m_Sensor_Xb.updateData(1);
-	//	break;
-	//case CTRL_DOWN:
-	//	m_Sensor_Xa.updateData(-1); 
-	//	m_Sensor_Xb.updateData(-1); 
-	//	break;
-	//case CTRL_RIGHT:
-	//	m_Sensor_Ya.updateData(1);
-	//	break;
-	//case CTRL_LEFT:
-	//	m_Sensor_Ya.updateData(-1); 
-	//	break;
-	//}
+	switch (CONTROL_KEY){
+	case CTRL_UP: 
+		m_Sensor_Xa.updateData(1);	/* increment sensor count when motor goes forward */
+		m_Sensor_Xb.updateData(1);
+		break;
+	case CTRL_DOWN:
+		m_Sensor_Xa.updateData(-1); 
+		m_Sensor_Xb.updateData(-1); 
+		break;
+	case CTRL_RIGHT:
+		m_Sensor_Ya.updateData(1);
+		break;
+	case CTRL_LEFT:
+		m_Sensor_Ya.updateData(-1); 
+		break;
+	}
 
 
 }
