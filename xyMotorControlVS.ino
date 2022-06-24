@@ -132,99 +132,68 @@ void loop()
 		ledIndicator_OFF(IND_LED3);
 		ledIndicator_OFF(IND_LED4);
 		ledIndicator_OFF(IND_LED5);
-
-
 		MotorXa.motorSTOP(); 
 		MotorXb.motorSTOP(); 
 		MotorYa.motorSTOP(); 
-
 		break;
 
 	case CTRL_UP:
 		ledIndicator_ON(IND_LED1); 
-		
 		MotorYa.motorSTOP(); 
-
 		if (fun1Time.update()) {	/* non blocking delay for soft start */
 			MotorXa.ccRotate();
 			MotorXb.cRotate();
 		}
-
-		//m_Sensor_Xa.updateData(1);	/* increment sensor count when motor goes forward */
-		//m_Sensor_Xb.updateData(1); 
-
 		break;
 
 	case CTRL_DOWN:
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_ON(IND_LED2);
-
 		MotorYa.motorSTOP(); 
-
 		if (fun1Time.update()) {
 			MotorXa.cRotate();
 			MotorXb.ccRotate();
 		}
-
-		//m_Sensor_Xa.updateData(-1); 
-		//m_Sensor_Xb.updateData(-1); 
-
 		break;
 
 	case CTRL_RIGHT: 
 		ledIndicator_OFF(IND_LED1); 
 		ledIndicator_OFF(IND_LED2); 
 		ledIndicator_ON(IND_LED3); 
-
 		MotorXa.motorSTOP(); 
 		MotorXb.motorSTOP(); 
-
-
 		if (fun1Time.update()) {
 			MotorYa.cRotate();
 		}
-		//m_Sensor_Ya.updateData(1); 
-
 		break; 
 
 	case CTRL_LEFT: 
 		ledIndicator_OFF(IND_LED1); 
 		ledIndicator_OFF(IND_LED2); 
 		ledIndicator_OFF(IND_LED3); 
-		ledIndicator_ON(IND_LED4); 
-
+		ledIndicator_ON(IND_LED4);
 		MotorXa.motorSTOP(); 
 		MotorXb.motorSTOP();
-
-
 		if (fun1Time.update()) {
 			MotorYa.ccRotate();
 		}
-		//m_Sensor_Ya.updateData(-1); 
-
 		break;
 
 	case CTRL_SET_ORIGIN: 
-
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_OFF(IND_LED2);
 		ledIndicator_OFF(IND_LED3);
 		ledIndicator_OFF(IND_LED4);
 		ledIndicator_ON(IND_LED5); 
-
 		while (Xa_switch.getFlag() != 1) {
 			ledIndicator_ON(IND_LED1); 
 			ledIndicator_ON(IND_LED2);
-
 			if (fun1Time.update()) {
 				MotorXa.cRotate();
 				MotorXb.ccRotate();
 			}
-
 			myController.poll(); 
-
 		}
-
 		MotorXa.motorHALT(); 
 		MotorXb.motorHALT(); 
 		m_Sensor_Xa.resetSensor();
@@ -237,14 +206,12 @@ void loop()
 		ledIndicator_OFF(IND_LED3);
 		ledIndicator_OFF(IND_LED4);
 		ledIndicator_OFF(IND_LED5);
-
 		/* find the origin by ctrl_set_origin procedure
 		* then move the Xmotor until it presses the x_switch
 		* store the counter data
 		* then move Ymotor until it presses the y_switch
 		* store the counter data
 		*/
-
 		break;
 
 	default: 
@@ -253,13 +220,9 @@ void loop()
 		ledIndicator_OFF(IND_LED3);
 		ledIndicator_OFF(IND_LED4);
 		ledIndicator_OFF(IND_LED5);
-		
 		MotorXa.motorSTOP(); 
 		MotorXa.motorSTOP(); 
 		MotorYa.motorSTOP(); 
-
-		//MotorXa.motorHALT();
-		//MotorXb.motorHALT();
 	}
 
 	/* Auto correcting motors if their count differ by 2 */
@@ -321,9 +284,8 @@ void serialEvent1() {
 /* ISR --------------------------------------*/
 ISR(TIMER2_COMPA_vect) {
 	//interrupt commands for TIMER 2 here
-	/* checking switch status */
+	/* checking switch status (accessed using getswitch())*/
 	Xa_switch.checkSwitch(); 
-
 	/* updating counter data */
 	switch (CONTROL_KEY){
 	case CTRL_UP: 
@@ -341,6 +303,4 @@ ISR(TIMER2_COMPA_vect) {
 		m_Sensor_Ya.updateData(-1); 
 		break;
 	}
-
-
 }
