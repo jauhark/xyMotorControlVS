@@ -4,7 +4,7 @@
 
 #include "m_InterruptService.h"
 
-/* 100mS timer */
+/* 10mS timer */
 
 void setTimerInterrupt() {
 	noInterrupts();

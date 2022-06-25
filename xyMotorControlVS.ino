@@ -19,16 +19,10 @@
 /* ============================================================== */
 /* SETUP -----------------------------------*/
 
-int PROG_INITIALISED = 0; 
-
 /* ----------------------------------------- */
 
 void setup() {
 
-	/* initialising limiterSwitch for Xa */
-
-
-	//pinMode(X_LIMITER_SWITCH, OUTPUT); 
 	/* Motor Initialisation */
 
 	/* X direction motor */
@@ -38,11 +32,12 @@ void setup() {
 	MotorXb.motorInit();
 	MotorXb.enableMotor();
 
+	/* Y direction motor */
 	MotorYa.motorInit(); 
 	MotorYa.enableMotor(); 
 
 
-	/* Initialisint sensor */
+	/* Initialisint sensor for motor xa */
 	while (m_Sensor_Xa.initSensor() == false) {
 		Serial.println("FAILED TO INITIALISE SENSOR Xa"); 
 		Serial.println("CHECK THE SENSORS"); 
@@ -50,7 +45,7 @@ void setup() {
 	}
 	Serial.println("SUCCESSFULLY INITIALISED SENSOR Xa");
 
-	/* Initialisint sensor */
+	/* Initialisint sensor for motor xb */
 	while (m_Sensor_Xb.initSensor() == false) {
 		Serial.println("FAILED TO INITIALISE SENSOR Xb");
 		Serial.println("CHECK THE SENSORS");
@@ -58,7 +53,7 @@ void setup() {
 	}
 	Serial.println("SUCCESSFULLY INITIALISED SENSOR Xb");
 
-	/* Initialisint sensor */
+	/* Initialisint sensor for motor Ya*/
 	while (m_Sensor_Ya.initSensor() == false) {
 		Serial.println("FAILED TO INITIALISE SENSOR Ya");
 		Serial.println("CHECK THE SENSORS");
@@ -74,35 +69,33 @@ void setup() {
 	}
 	Serial.println("CONNECTED TO CLIENT");
 	
-	setTimerInterrupt();
+	setTimerInterrupt();	/* setting timer interrupt 10ms */
 
+	/* ============================================================== */
+	/* Limiter switch initialisation */
 	Xa_switch.init(); /* initialising Xa limiter switch */
-
+	/*
+	* create new limiter switch objects in m_switches.h lib file. details there. 
+	* add limiter switch initialisations for every limtier switch here... 
+	*/
+	/* ============================================================== */
+	/* initialising led indicators.. */
 	setupLEDIndicators();
-
-	PROG_INITIALISED = 110; 
 }
 
 /* ============================================================== */
 /* LOOP -------------------------------------*/
 
 noDelay fun1Time(1);
-int CONTROL_KEY = 0; 
+int CONTROL_KEY = 0;	/* creating a non blocking delay object for motor pwm update */
 
 void loop() 
 {
 	myController.poll(); 
 	/* COMMUNICATION DATA UPDATE*/
 	/*-------------------------------------------------*/
-	/*	0: PROG INITIALISED? 
-	*	1: MotorXa state
-	*	2: MotorXa counter (irSensor1)
-	*	3: MotorXb state
-	*	4: MotorXb counter (irSensor2)
-	*/
-
 	/*
-	* 1 motor Rotation=11.14cm 
+	* data in myController.toClientData array will be send to client through modbus
 	*/
 	myController.toClientData[0] = MotorXa.getState(); /*index 0 in labview*/
 	myController.toClientData[1] = MotorXb.getState();
@@ -113,10 +106,12 @@ void loop()
 
 	myController.sendDataToClient(); 
 	/* MOTOR CONTROLS */
-	CONTROL_KEY = myController.getCtrlData(); 
 
+	CONTROL_KEY = myController.getCtrlData(); /* reading the control instruction from client */
+
+	/* ==================================================================================================== */
 	/* motor should'nt move if limiterSwitch is pressed and still the control is pressed down */
-
+	/* LIMITER SWITCH CODES AND CONDITIONS TO BE CHECKED HERE */ 
 	if ((Xa_switch.getFlag() == 1) && (CONTROL_KEY == CTRL_DOWN)) {
 		MotorXa.motorHALT();
 		MotorXb.motorHALT();
@@ -124,8 +119,16 @@ void loop()
 		m_Sensor_Xb.resetSensor(); 
 	}
 
-	switch (CONTROL_KEY) {
+	/*
+	* CODE FOR LIMITER SWITCH 2
+	* CODE FOR LIMITER SWITCH 3
+	* ...
+	*/
 
+	/* ==================================================================================================== */
+
+	switch (CONTROL_KEY) {
+		/*-------------------------------------------------*/
 	case 0: 
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_OFF(IND_LED2);
@@ -136,7 +139,7 @@ void loop()
 		MotorXb.motorSTOP(); 
 		MotorYa.motorSTOP(); 
 		break;
-
+		/*-------------------------------------------------*/
 	case CTRL_UP:
 		ledIndicator_ON(IND_LED1); 
 		MotorYa.motorSTOP(); 
@@ -145,7 +148,7 @@ void loop()
 			MotorXb.cRotate();
 		}
 		break;
-
+		/*-------------------------------------------------*/
 	case CTRL_DOWN:
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_ON(IND_LED2);
@@ -155,7 +158,7 @@ void loop()
 			MotorXb.ccRotate();
 		}
 		break;
-
+		/*-------------------------------------------------*/
 	case CTRL_RIGHT: 
 		ledIndicator_OFF(IND_LED1); 
 		ledIndicator_OFF(IND_LED2); 
@@ -166,7 +169,7 @@ void loop()
 			MotorYa.cRotate();
 		}
 		break; 
-
+		/*-------------------------------------------------*/
 	case CTRL_LEFT: 
 		ledIndicator_OFF(IND_LED1); 
 		ledIndicator_OFF(IND_LED2); 
@@ -178,7 +181,7 @@ void loop()
 			MotorYa.ccRotate();
 		}
 		break;
-
+		/*-------------------------------------------------*/
 	case CTRL_SET_ORIGIN: 
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_OFF(IND_LED2);
@@ -199,7 +202,7 @@ void loop()
 		m_Sensor_Xa.resetSensor();
 		m_Sensor_Xb.resetSensor();
 		break;
-
+		/*-------------------------------------------------*/
 	case CTRL_CALIBRATE_BOUNDS:
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_OFF(IND_LED2);
@@ -213,7 +216,12 @@ void loop()
 		* store the counter data
 		*/
 		break;
-
+		/*-------------------------------------------------*/
+		/* 
+		* ADD OTHER CONTROL CASES HERE...
+		* ...
+		*/
+		/*-------------------------------------------------*/
 	default: 
 		ledIndicator_OFF(IND_LED1);
 		ledIndicator_OFF(IND_LED2);
@@ -250,43 +258,30 @@ void loop()
 //		m_Sensor_Xb.updateData(1); 
 //	}
 //}
-
-
-/*	GO TO ORIGIN */
-/*
-* WHEN GO to Origin pressed (X_counter=0, Y_Counter=0),
-* first, X motors rotates in CW direction until it presses button in X_Origin
-* then it resets the X_counter
-* Then Y motor rotates in CW direction until it presses button in Y_Origin
-* then it resets the Y_Counter.
-*/
-
-/* AVOID MOTOR LOCKUP */
-/*
-* WHEN Xa_Counter != Xb_Counter, then motor lockup occurs.
-* To avoid error buildup, desired to rest motors at Origin (0,0);
-* loopwise check values for Xa_Counter and Xb_Counter. if one is greater than other,
-* then stop the other motor and slowly brings the other motor to position.
-*/
-
 	toggleLedIndicator(IND_LED6);
 	/*-------------------------------------------------*/
 }
 
 /* ============================================================== */
-/* EVENT ------------------------------------*/
-void serialEvent1() {
-	//statements
-	myController.readFromClient();
-}
-
-/* ============================================================== */
 /* ISR --------------------------------------*/
 ISR(TIMER2_COMPA_vect) {
-	//interrupt commands for TIMER 2 here
-	/* checking switch status (accessed using getswitch())*/
+	//interrupt commands for TIMER 2 here, (10mS)
+
+	/* ============================================================== */
+	/*
+	* Call switchObject.checkSwitch() on every switch object to update switch flags. 
+	* switch flags can be then checked whenever required. 
+	*/
 	Xa_switch.checkSwitch(); 
+	/*
+	* update for limtier switch 2 added hre
+	* update for limiter switch 3 added here.
+	* ... 
+	*/
+
+	/* ============================================================== */
 	/* updating counter data */
+	/* counter data updated for every cases. additional cases to be added here. */
 	switch (CONTROL_KEY){
 	case CTRL_UP: 
 		m_Sensor_Xa.updateData(1);	/* increment sensor count when motor goes forward */
@@ -303,4 +298,11 @@ ISR(TIMER2_COMPA_vect) {
 		m_Sensor_Ya.updateData(-1); 
 		break;
 	}
+}
+
+/* ============================================================== */
+/* EVENT ------------------------------------*/
+void serialEvent1() {
+	//statements
+	myController.readFromClient();
 }
