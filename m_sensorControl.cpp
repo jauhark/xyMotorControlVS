@@ -69,6 +69,23 @@ void ir_Sensor::updateData(int inc) {
 	//if (counter < IR_COUNTER_LIMIT) { counter = IR_COUNTER_LIMIT; }
 }
 
+//void ir_Sensor::updateData(int inc) {
+//	static int switch_pressed = 0; 
+//	static int switch_notPressed = 0;
+//
+//	if (digitalRead(pin) != initialSensorState) {
+//		switch_notPressed = 0; 
+//		switch_pressed++; 
+//		if (switch_pressed > ) {
+//			switch_pressed = 100;
+//			counter += inc; 
+//		}
+//	}
+//	else {
+//		switch_pressed = 0; 
+//	}
+//
+//}
 /*------------------------------------------------------*/
 /* resets sensor datas */
 

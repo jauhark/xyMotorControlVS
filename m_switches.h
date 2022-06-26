@@ -35,6 +35,7 @@
 * @getFlag() returns the current pin Status. 1= pressed, (active LOW), 0= not pressed (HIGH CONDITION)
 * 
 */
+
 class switchInput {
 private: 
 	uint8_t pin;
@@ -48,11 +49,11 @@ public:
 		countLow = 0;
 		Flag = 0;	//low
 	}
-
+	/*-------------------------------------------------*/
 	void init() {
 		pinMode(pin, INPUT_PULLUP);
 	}
-
+	/*-------------------------------------------------*/
 	void checkSwitch() {
 		if (digitalRead(pin) == HIGH) {
 			countLow = 0; 
@@ -71,7 +72,7 @@ public:
 			}
 		}
 	}
-
+	/*-------------------------------------------------*/
 	uint8_t getFlag() {
 		return Flag;
 	}

@@ -274,7 +274,7 @@ ISR(TIMER2_COMPA_vect) {
 	*/
 	Xa_switch.checkSwitch(); 
 	/*
-	* update for limtier switch 2 added hre
+	* update for limiter switch 2 added hre
 	* update for limiter switch 3 added here.
 	* ... 
 	*/
